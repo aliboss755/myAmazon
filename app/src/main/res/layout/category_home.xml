@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.google.android.material.card.MaterialCardView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="120dp"
+    android:layout_height="75dp"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/card_view"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:backgroundTint="@color/white"
+    android:outlineAmbientShadowColor="#ff00"
+    android:outlineSpotShadowColor="#ff00"
+    app:strokeColor="#ff00"
+    app:cardCornerRadius="23dp"
+    app:strokeWidth="1.5dp"
+    android:layout_marginHorizontal="5dp"
+    app:cardElevation="15dp">
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:layout_gravity="center"
+        android:gravity="center">
+
+        <ImageView
+            android:id="@+id/img"
+            android:layout_width="35dp"
+            app:tint="#ff00"
+            tools:src="@drawable/box_open"
+            android:layout_gravity="center_horizontal"
+            android:layout_height="30dp"/>
+
+        <TextView
+            android:id="@+id/txt_title"
+            android:layout_width="wrap_content"
+            android:textColor="#ff00"
+            android:textStyle="bold"
+            android:layout_height="wrap_content"
+            android:text="Shoes"/>
+
+    </LinearLayout>
+
+</com.google.android.material.card.MaterialCardView>

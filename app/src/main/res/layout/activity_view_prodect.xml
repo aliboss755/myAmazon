@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+
+    tools:context=".ViewProductActivity">
+    <androidx.core.widget.NestedScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        app:layout_behavior="com.google.android.material.appbar.AppBarLayout$ScrollingViewBehavior">
+<LinearLayout
+    android:layout_width="match_parent"
+    android:orientation="vertical"
+    android:layout_height="match_parent">
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_marginStart="20dp"
+        android:textSize="30sp"
+        style="@style/TextAppearance.AppCompat.Headline"
+        android:textStyle="bold"
+        android:layout_marginTop="20dp"
+        android:textColor="@color/black"
+
+        android:layout_height="wrap_content"
+        android:text="Good Product "/>
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_marginStart="20dp"
+        android:textSize="30sp"
+        android:textColor="@color/black"
+        android:textStyle="bold"
+        android:layout_height="wrap_content"
+        android:text="Waiting !"/>
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/productRv"
+        android:background="@color/primaryColor"
+        android:layout_width="match_parent"
+        android:layout_marginBottom="@dimen/_40sdp"
+        android:layout_height="match_parent" />
+
+</LinearLayout>
+
+
+
+    </androidx.core.widget.NestedScrollView>
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:id="@+id/frame_layout"/>
+    <com.google.android.material.bottomappbar.BottomAppBar
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/BottomAppBar"
+        android:background="@color/white"
+        android:layout_gravity="bottom"
+        app:fabCradleRoundedCornerRadius="@dimen/_50sdp"
+        >
+
+        <com.google.android.material.bottomnavigation.BottomNavigationView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:elevation="@dimen/_100sdp"
+            android:id="@+id/BottomNavigationView"
+            app:menu="@menu/add2"
+            />
+
+    </com.google.android.material.bottomappbar.BottomAppBar>
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:layout_width="wrap_content"
+        android:id="@+id/floatingBt"
+        android:layout_height="wrap_content"
+        android:src="@drawable/nav_home"
+        app:maxImageSize="@dimen/_30sdp"
+        android:paddingStart="@dimen/_10sdp"
+        app:layout_anchor="@id/BottomAppBar"
+    />
+
+</androidx.coordinatorlayout.widget.CoordinatorLayout>

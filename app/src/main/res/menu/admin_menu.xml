@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <group android:checkableBehavior="single">
+<!--        <item-->
+<!--            android:id="@+id/iam_Admin"-->
+<!--            android:icon="@drawable/ic_baseline_delete_24"-->
+<!--            android:title="@string/i_m_admin" />-->
+        <item
+            android:id="@+id/edit_Profile"
+            android:icon="@drawable/ic_person"
+            android:title="edit" />
+<!--        <item-->
+<!--            android:id="@+id/add_Product"-->
+<!--            android:icon="@drawable/ic_person"-->
+<!--            android:title="@string/add_product" />-->
+
+<!--        <item-->
+<!--            android:id="@+id/edit_Product"-->
+<!--            android:icon="@drawable/ic_edit_24"-->
+<!--            android:title="@string/edit_product" />-->
+
+
+    </group>
+
+    <item
+        android:id="@+id/other"
+        android:title="">
+
+        <menu>
+<!--            <item-->
+<!--                android:id="@+id/logout"-->
+<!--                android:icon="@drawable/ic_logout_24"-->
+<!--                android:title="@string/log_out" />-->
+        </menu>
+    </item>
+</menu>

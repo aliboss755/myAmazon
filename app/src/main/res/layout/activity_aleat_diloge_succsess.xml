@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:gravity="center"
+    android:id="@id/successLayout"
+    android:orientation="vertical"
+    tools:context=".AlertDislodgeSuccess">
+    <Button
+        android:layout_width="@dimen/_200sdp"
+        android:layout_height="@dimen/_60sdp"
+        android:id="@+id/successBt"
+        android:background="@drawable/redios"
+        android:shadowRadius="@integer/material_motion_duration_long_1"/>
+
+
+
+
+</LinearLayout>

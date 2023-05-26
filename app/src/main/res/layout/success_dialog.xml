@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="@dimen/_300sdp"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/successLayout"
+    android:elevation="@dimen/_500sdp"
+    android:background="#A6FFFFFF"
+    android:layout_height="wrap_content">
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="@dimen/_300sdp"
+        android:layout_height="wrap_content"
+
+        android:id="@+id/layoutDialog"
+        android:background="@drawable/custom_bkg"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        >
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/successTitle"
+            android:textColor="@color/black"
+            android:paddingTop="28dp"
+            android:text="Success"
+            android:textStyle="bold"
+            android:gravity="center_horizontal"
+            android:textSize="@dimen/_20sdp"
+            app:layout_constraintTop_toTopOf="@+id/layoutDialog"/>
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/successDesc"
+            android:text="Congratulation"
+            android:gravity="center_horizontal"
+            android:textSize="@dimen/_18sdp"
+            android:layout_marginTop="@dimen/_16sdp"
+            android:layout_marginEnd="@dimen/_20sdp"
+            android:layout_marginStart="@dimen/_20sdp"
+            app:layout_constraintTop_toBottomOf="@id/successTitle"
+            app:layout_constraintBottom_toTopOf="@id/successDone"/>
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/successDone"
+            android:textSize="@dimen/_14sdp"
+            android:text="Done"
+            android:layout_marginTop="12dp"
+            android:layout_marginStart="@dimen/_40sdp"
+            android:layout_marginEnd="@dimen/_40sdp"
+            android:backgroundTint="#04DA4B"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/successDesc"/>
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+<ImageView
+    android:layout_width="@dimen/_50sdp"
+    android:layout_height="@dimen/_50sdp"
+    android:id="@+id/successImage"
+    android:src="@drawable/sucess"
+    android:layout_marginEnd="@dimen/_40sdp"
+    android:layout_marginStart="@dimen/_40sdp"
+    app:layout_constraintStart_toStartOf="parent"
+    app:layout_constraintEnd_toEndOf="parent"
+    app:layout_constraintTop_toTopOf="@id/layoutDialog"
+    app:layout_constraintBottom_toTopOf="@id/layoutDialog"/>
+</androidx.constraintlayout.widget.ConstraintLayout>

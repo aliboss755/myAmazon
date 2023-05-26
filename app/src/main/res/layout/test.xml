@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+    <androidx.core.widget.NestedScrollView
+        android:id="@+id/nested_scroll_view"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <!-- Vertical scroll -->
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/recycler_view_vertical"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content" />
+
+            <!-- Horizontal scroll -->
+            <HorizontalScrollView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:scrollbars="none">
+
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal">
+
+                    <!-- Horizontal content -->
+
+                    <androidx.recyclerview.widget.RecyclerView
+                        android:id="@+id/recycler_view_vertical2"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent" />
+
+
+                    <!-- Add more horizontal content views as needed -->
+                </LinearLayout>
+            </HorizontalScrollView>
+
+            <!-- Add more vertical content views as needed -->
+        </LinearLayout>
+    </androidx.core.widget.NestedScrollView>
+
+</androidx.coordinatorlayout.widget.CoordinatorLayout>
