@@ -46,7 +46,7 @@ public class CustomerAdepter extends RecyclerView.Adapter <CustomerAdepter.Custo
         holder.emile.setText ( c.getEmail () );
         holder.userImage.setImageResource ( R.drawable.img_2 );
         if (null != c.getImage ( ))
-        holder.userImage.setImageURI ( Uri.parse ( c.getImage () ) );
+            holder.userImage.setImageURI ( Uri.parse ( c.getImage () ) );
         holder.itemView.setOnClickListener ( v -> {
             if (listener != null) {
 //                int position1 =  holder.getAdapterPosition ();
@@ -70,9 +70,6 @@ public class CustomerAdepter extends RecyclerView.Adapter <CustomerAdepter.Custo
             userName=binding.userNameTv;
             emile=binding.emileTv;
             password=binding.PasswordTv;
-
-
-
 
         }
     }

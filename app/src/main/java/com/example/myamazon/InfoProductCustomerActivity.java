@@ -9,7 +9,6 @@ import android.view.View;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.recyclerview.widget.LinearLayoutManager;
 
 import com.example.myamazon.databinding.ActivityInfoProdectCustomerBinding;
 
@@ -20,10 +19,10 @@ public class InfoProductCustomerActivity extends AppCompatActivity implements On
     private int productId;
     mySql dataBase;
     String image;
-    ProductAdepter adepter;
     int newQuantity = 1;
     int customerId;
     ArrayList<Product> products;
+
     @SuppressLint("SetTextI18n")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -35,6 +34,7 @@ public class InfoProductCustomerActivity extends AppCompatActivity implements On
         int quantity = intent.getIntExtra ( "q", 10 );
         String name = intent.getStringExtra ( "name" );
         productId = intent.getIntExtra ( "index", 20 );
+
         customerId = intent.getIntExtra ( "id", 20 );
         String description = intent.getStringExtra ( "description" );
         double price = intent.getDoubleExtra ( "price", 30 );
@@ -64,35 +64,25 @@ public class InfoProductCustomerActivity extends AppCompatActivity implements On
             binding.quantity.setText ( String.valueOf ( newQuantity ) );
         } );
 
-        binding.bayBt.setOnClickListener ( v -> {
+        binding.addToCard.setOnClickListener ( v -> {
             try {
-                if (quantity >= newQuantity) {
-                    Product product = dataBase.getProduct ( productId );
+                if (quantity > newQuantity) {
+                    dataBase.associateProductWithCustomer ( productId, customerId );
                     Toast.makeText ( this, "" + quantity, Toast.LENGTH_SHORT ).show ( );
-                    product.setQuantity ( quantity - newQuantity );
+
                     Toast.makeText ( this, "" + quantity, Toast.LENGTH_SHORT ).show ( );
-                    binding.bayBt.setOnClickListener ( v1 -> {
-                        Intent intent1 = new Intent ( getBaseContext ( ), Ordering_CartActivity.class );
-                        intent1.putExtra ( "quntity", newQuantity );
-                        intent1.putExtra ( "title", name );
-                        intent1.putExtra ( "price", price );
-                        intent1.putExtra ( "productId", productId );
-                        intent1.putExtra ( "customerId", customerId );
-                        intent1.putExtra ( "image", image );
-                        startActivity ( intent1 );
-                        finish ( );
-
-                    } );
-
-                } else {
-                    Toast.makeText ( this, "No", Toast.LENGTH_SHORT ).show ( );
+                    finish ( );
                 }
-            } catch (Exception e) {
-                Toast.makeText ( this, "Error", Toast.LENGTH_SHORT ).show ( );
+            } catch (Exception ignored) {
             }
-
         } );
-
+        binding.bayBt.setOnClickListener ( v1 -> {
+            if (quantity > newQuantity) {
+                dataBase.updateQuantity ( productId, quantity - newQuantity );
+                startActivity ( new Intent ( getBaseContext ( ), activity_checkout_shopping.class ).putExtra ( "name", getIntent ( ).getStringExtra ( "userName" ) ) );
+            }
+            Toast.makeText ( this, "" + quantity + "test", Toast.LENGTH_SHORT ).show ( );
+        } );
 
     }
 

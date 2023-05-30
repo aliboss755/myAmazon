@@ -41,6 +41,7 @@
         <TextView
             android:id="@+id/product_Price"
             android:layout_width="wrap_content"
+            android:textColor="@color/black"
             android:layout_height="wrap_content"
             app:layout_constraintStart_toEndOf="@id/product_Image"
             app:layout_constraintTop_toBottomOf="@id/product_Name"
@@ -82,6 +83,7 @@
             app:layout_constraintTop_toTopOf="parent" />
 
         <TextView
+            android:textColor="@color/black"
             android:id="@+id/product_quantities"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"

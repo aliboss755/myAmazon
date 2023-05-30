@@ -66,7 +66,7 @@
                 android:id="@+id/productDescription"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="24dp"
+                android:layout_marginTop="22dp"
                 android:text="@string/proudest_details"
                 android:textColor="@color/black"
                 android:textSize="20sp"
@@ -144,20 +144,34 @@
             </LinearLayout>
 
             <Button
-                android:id="@+id/bayBt"
+                android:id="@+id/addToCard"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="40dp"
+                android:layout_marginTop="64dp"
                 android:background="@drawable/button"
-                android:clickable="false"
-                android:enabled="true"
-                android:onClick="card_click"
                 android:text="@string/add_to_car"
                 android:textAllCaps="false"
                 android:textSize="16sp"
                 android:textStyle="bold"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintHorizontal_bias="0.498"
+                app:layout_constraintHorizontal_bias="0.212"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/linearOne" />
+
+            <Button
+                android:id="@+id/bayBt"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="68dp"
+                android:background="@drawable/button"
+                android:clickable="false"
+                android:enabled="true"
+                android:text="Bay"
+                android:textAllCaps="false"
+                android:textSize="16sp"
+                android:textStyle="bold"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.787"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/linearOne" />
 

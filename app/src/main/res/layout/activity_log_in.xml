@@ -4,8 +4,12 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#BDBDBD"
     tools:context=".logInActivity">
+    <ImageView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:src="@drawable/img_11"
+        tools:ignore="MissingConstraints" />
     <androidx.cardview.widget.CardView
         android:id="@+id/card"
         android:layout_width="match_parent"

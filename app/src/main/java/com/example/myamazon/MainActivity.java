@@ -121,7 +121,7 @@ public class MainActivity extends AppCompatActivity {
         binding.productDescription.setText ( description );
         binding.productQuantity.setText ( String.valueOf ( q ) );
         binding.productPrice.setText ( String.valueOf ( price ) );
-        if (!image.equals ( "" ))
+        if (!image.equals ( "" )&&image!=null)
             binding.image.setImageURI ( Uri.parse ( image ) );
 
 

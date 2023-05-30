@@ -15,7 +15,6 @@ import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-
 import com.example.myamazon.databinding.ActivityViewProductCustomerBinding;
 
 import java.util.ArrayList;
@@ -28,8 +27,8 @@ public class ViewProductCustomerActivity extends AppCompatActivity implements On
     Customer customer;
     String userName;
     mySql dataBase;
+    boolean isCart;
     int id;
-    Intent intent;
     @SuppressLint("NotifyDataSetChanged")
     ActivityResultLauncher<Intent> launcher = registerForActivityResult (
             new ActivityResultContracts.StartActivityForResult ( ),
@@ -42,28 +41,31 @@ public class ViewProductCustomerActivity extends AppCompatActivity implements On
             }
     );
 
-    @SuppressLint("SetTextI18n")
+    @SuppressLint({"SetTextI18n", "NonConstantResourceId"})
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate ( savedInstanceState );
         binding = ActivityViewProductCustomerBinding.inflate ( getLayoutInflater ( ) );
         setContentView ( binding.getRoot ( ) );
         userName = getIntent ( ).getStringExtra ( "userName" );
-        userName = getIntent ( ).getStringExtra ( "userName" );
         setCategories ( );
-
+        isCart = getIntent ( ).getBooleanExtra ( "is", false );
         dataBase = new mySql ( this );
         products = dataBase.getAllProduct ( );
+        try {
+            id = dataBase.getCustomerIdByName ( userName );
+        } catch (Exception e) {
+            Toast.makeText ( this, "Error", Toast.LENGTH_SHORT ).show ( );
+        }
         adepter = new ProductAdepter ( products, this );
-       id = dataBase.getCustomerIdByName ( userName );
+
         customer = dataBase.getCustomer ( id );
 
         binding.BottomNavigationView.setOnNavigationItemSelectedListener ( item -> {
             // Handle item selection here
             switch (item.getItemId ( )) {
-
                 case R.id.bag:
-                     startActivity ( new Intent ( getBaseContext (),Ordering_CartActivity.class ).putExtra ( "customerId",id ) );
+                    startActivity ( new Intent ( getBaseContext ( ), Ordering_CartActivity.class ).putExtra ( "customerId", id ) );
                     return true;
                 case R.id.persone:
                     startActivity ( new Intent ( getBaseContext ( ), UserPageActivity.class ).putExtra ( "name", userName ).putExtra ( "id", id ) );
@@ -119,13 +121,19 @@ public class ViewProductCustomerActivity extends AppCompatActivity implements On
     public void onItemClick(View view, int position, int id) {
         Intent intent = new Intent ( getBaseContext ( ), InfoProductCustomerActivity.class );
         intent.putExtra ( "PRODUCT_KEY", position );
+        intent.putExtra ( "userName", userName );
         intent.putExtra ( "description", products.get ( position ).getDescription ( ) );
         intent.putExtra ( "price", products.get ( position ).getPrice ( ) );
         intent.putExtra ( "q", products.get ( position ).getQuantity ( ) );
         intent.putExtra ( "name", products.get ( position ).getName ( ) );
         intent.putExtra ( "image", products.get ( position ).getImage ( ) );
         intent.putExtra ( "index", id );
-        intent.putExtra ( "id", dataBase.getCustomerIdByName ( userName ) );
+        try {
+            intent.putExtra ( "id", dataBase.getCustomerIdByName ( userName ) );
+        } catch (Exception ignored) {
+
+        }
+
         Toast.makeText ( ViewProductCustomerActivity.this, String.valueOf ( position ), Toast.LENGTH_SHORT ).show ( );
         launcher.launch ( intent );
     }

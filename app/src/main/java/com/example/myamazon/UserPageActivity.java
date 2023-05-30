@@ -31,6 +31,7 @@ public class UserPageActivity extends AppCompatActivity {
         setContentView ( binding.getRoot ( ) );
         navigationView = (binding.toolbar);
         id = getIntent ( ).getIntExtra ( "id", -1 );
+        String name2 = getIntent ( ).getStringExtra ( "name");
         mySql = new mySql ( this );
         binding.EmileEt.setEnabled ( false );
         binding.userNameEt.setEnabled ( false );
@@ -59,7 +60,6 @@ public class UserPageActivity extends AppCompatActivity {
                 menu.getItem ( 0 ).setVisible ( false );
                 menu.getItem ( 1 ).setVisible ( false );
                 menu.getItem ( 2 ).setVisible ( false );
-
                 String name = Objects.requireNonNull ( binding.userNameEt.getText ( ) ).toString ( );
                 String password = Objects.requireNonNull ( binding.PasswordEt.getText ( ) ).toString ( );
                 String emile = Objects.requireNonNull ( binding.EmileEt.getText ( ) ).toString ( );

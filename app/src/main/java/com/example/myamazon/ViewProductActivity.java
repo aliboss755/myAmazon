@@ -190,4 +190,3 @@ public class ViewProductActivity extends AppCompatActivity implements OnItemClic
     }
 
 }
-

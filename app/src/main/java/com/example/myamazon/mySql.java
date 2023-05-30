@@ -13,7 +13,7 @@ import androidx.annotation.Nullable;
 import java.util.ArrayList;
 import java.util.List;
 
- class mySql extends SQLiteOpenHelper {
+class mySql extends SQLiteOpenHelper {
     public static final String COLUMN_PRODUCT_ID = "product_id";
     public static final String COLUMN_CUSTOMER_ID = "customer_id";
     public static final String Admin_TABLE_NAME = "Admin";
@@ -47,16 +47,18 @@ import java.util.List;
     @Override
     public void onCreate(SQLiteDatabase db) {
 
-            db.execSQL ( "CREATE TABLE " + Admin_TB_NAME + " (" + DB_CLN_ID + " INTEGER PRIMARY  KEY AUTOINCREMENT ," +
+        db.execSQL ( "CREATE TABLE " + Admin_TB_NAME + " (" + DB_CLN_ID + " INTEGER PRIMARY  KEY AUTOINCREMENT ," +
                 "" + DB_CLN_NAME + " Text , " + DB_CLN_PASSWORD + " Text, " + DB_CLN_EMILE + " TEXT )" );
+
+
+        db.execSQL ( "CREATE TABLE " + Customer_TB_NAME + " (" + Customer_CLN_ID + " INTEGER PRIMARY  KEY AUTOINCREMENT ," +
+                "" + Customer_CLN_Name + " Text unique , " + Customer_CLN_PASSWORD + " Text, " + Customer_CLN_EMILE + " TEXT , " + Customer_CLN_Image + " Text)" );
+
 
         db.execSQL ( "CREATE TABLE " + Product_TABLE_NAME + " (" + Product_CLN_ID + " INTEGER PRIMARY  KEY AUTOINCREMENT," +
                 "" + Product_CLN_name + " Text , " + Product_CLN_description + " Text,  " + Product_CLN_image + " Text," + Product_CLN_price + " REAL, "
                 + Product_CLN_quantity + " INteger)" );
 
-        db.execSQL ( "CREATE TABLE " + Customer_TB_NAME + " (" + Customer_CLN_ID + " INTEGER PRIMARY  KEY," +
-                "" + Customer_CLN_Name + " Text unique , " + Customer_CLN_PASSWORD + " Text, " + Customer_CLN_EMILE + " TEXT , " + Customer_CLN_Image + " Text,"
-                + "FOREIGN KEY(" + COLUMN_PRODUCT_ID + ") REFERENCES " + Product_TABLE_NAME + "(" + Product_CLN_ID + "))" );
 
         db.execSQL ( "CREATE TABLE " + TABLE_PURCHASES + " (" +
                 COLUMN_PRODUCT_ID + " INTEGER," +
@@ -75,74 +77,6 @@ import java.util.List;
         db.insert ( TABLE_PURCHASES, null, values );
         db.close ( );
     }
-
-    public List<Product> getCustomerPurchasesById(int customerId) {
-        List<Product> purchases = new ArrayList<>();
-
-        SQLiteDatabase db = getReadableDatabase();
-
-        String query = "SELECT p.* FROM " + Product_TABLE_NAME + " p " +
-                "JOIN " + TABLE_PURCHASES + " pc ON p." + Product_CLN_ID + " = pc." + COLUMN_PRODUCT_ID + " " +
-                "WHERE pc." + COLUMN_CUSTOMER_ID + " = ?";
-
-        String[] selectionArgs = {String.valueOf(customerId)};
-
-        Cursor cursor = db.rawQuery(query, selectionArgs);
-
-        if (cursor != null && cursor.moveToFirst()) {
-            do {
-                int productId = cursor.getInt(cursor.getColumnIndexOrThrow(Product_CLN_ID));
-                String productName = cursor.getString(cursor.getColumnIndexOrThrow(Product_CLN_name));
-                String productDescription = cursor.getString(cursor.getColumnIndexOrThrow(Product_CLN_description));
-                double productPrice = cursor.getDouble(cursor.getColumnIndexOrThrow(Product_CLN_price));
-                int productQuantity = cursor.getInt(cursor.getColumnIndexOrThrow(Product_CLN_quantity));
-
-                Product purchase = new Product(productId, productName, productDescription, productPrice, productQuantity);
-                purchases.add(purchase);
-            } while (cursor.moveToNext());
-
-            cursor.close();
-        }
-
-        db.close();
-
-        return purchases;
-    }
-    @SuppressLint("Range")
-    public List<Product> getProductsByCustomer(int customerId) {
-        List<Product> products = new ArrayList<> ( );
-
-        SQLiteDatabase db = getReadableDatabase ( );
-        String query = "SELECT p.* FROM " + Product_TABLE_NAME + " p " +
-                "JOIN " + Customer_TB_NAME + " c ON p." + Product_CLN_ID + " = c." + COLUMN_PRODUCT_ID + " " +
-                "WHERE c." + Customer_CLN_ID + " = ?";
-
-        String[] selectionArgs = {String.valueOf ( customerId )};
-
-        Cursor cursor = db.rawQuery ( query, selectionArgs );
-
-        if (cursor != null && cursor.moveToFirst ( )) {
-            do {
-                int id = cursor.getInt ( cursor.getColumnIndex ( Product_CLN_ID ) );
-                String name = cursor.getString ( cursor.getColumnIndex ( Product_CLN_name ) );
-                String img = cursor.getString ( cursor.getColumnIndex ( Product_CLN_image ) );
-                String description = cursor.getString ( cursor.getColumnIndex ( Product_CLN_description ) );
-                double prise = cursor.getDouble ( cursor.getColumnIndex ( Product_CLN_price ) );
-                int quantity = cursor.getInt ( cursor.getColumnIndex ( Product_CLN_quantity ) );
-
-                Product product = new Product ( id, name, description, prise, quantity );
-                products.add ( product );
-            } while (cursor.moveToNext ( ));
-
-            cursor.close ( );
-        }
-
-        db.close ( );
-
-        return products;
-    }
-
-
     @SuppressLint("Range")
     public List<Product> getProductsByCustomer2(int customerId) {
         List<Product> products = new ArrayList<> ( );
@@ -163,7 +97,7 @@ import java.util.List;
                 String description = cursor.getString ( cursor.getColumnIndex ( Product_CLN_description ) );
                 double prise = cursor.getDouble ( cursor.getColumnIndex ( Product_CLN_price ) );
                 int quantity = cursor.getInt ( cursor.getColumnIndex ( Product_CLN_quantity ) );
-                Product product = new Product ( name, description, prise, quantity );
+                Product product = new Product ( name,img, description, prise, quantity );
                 products.add ( product );
             } while (cursor.moveToNext ( ));
 
@@ -200,7 +134,7 @@ import java.util.List;
     public ArrayList<Product> getAllProductCustomer(int customId) {
         ArrayList<Product> products = new ArrayList<> ( );
         SQLiteDatabase db = getReadableDatabase ( );
-        try (Cursor cursor = db.rawQuery ( "SELECT * FROM "+TABLE_PURCHASES+" WHERE id = ?  ",new String[] {String.valueOf ( customId )} )) {
+        try (Cursor cursor = db.rawQuery ( "SELECT * FROM " + TABLE_PURCHASES + " WHERE id = ?  ", new String[]{String.valueOf ( customId )} )) {
             if (cursor.moveToFirst ( )) {
                 do {
                     int id = cursor.getInt ( cursor.getColumnIndex ( Product_CLN_ID ) );
@@ -220,22 +154,21 @@ import java.util.List;
 
         return products;
     }
+
     public boolean deleteItemFromBasket(int customerId, int productId) {
-        SQLiteDatabase db = getWritableDatabase();
+        SQLiteDatabase db = getWritableDatabase ( );
         String whereClause = COLUMN_CUSTOMER_ID + " = ? AND " + COLUMN_PRODUCT_ID + " = ?";
-        String[] whereArgs = {String.valueOf(customerId), String.valueOf(productId)};
-        int rowsDeleted = db.delete(TABLE_PURCHASES, whereClause, whereArgs);
-        db.close();
+        String[] whereArgs = {String.valueOf ( customerId ), String.valueOf ( productId )};
+        int rowsDeleted = db.delete ( TABLE_PURCHASES, whereClause, whereArgs );
+        db.close ( );
         return rowsDeleted > 0;
     }
-
 
 
     @SuppressLint("Range")
     public int getCustomerIdByName(String customerName) {
         SQLiteDatabase db = getReadableDatabase ( );
-        int customerId = -1; // Default value if customer is not found
-
+        int customerId = -1;
         String[] columns = {Customer_CLN_ID};
         String selection = Customer_CLN_Name + " = ?";
         String[] selectionArgs = {customerName};
@@ -247,6 +180,42 @@ import java.util.List;
         return customerId;
     }
 
+    @SuppressLint("Range")
+    public int getCustomerIdByUsernameAndPassword(String username, String password) {
+        SQLiteDatabase db = getReadableDatabase ( );
+        int customerId = -1;
+
+        String[] columns = {Customer_CLN_ID};
+        String selection = Customer_CLN_Name + " = ? AND " + Customer_CLN_Name + " = ?";
+        String[] selectionArgs = {username, password};
+
+        Cursor cursor = db.query ( Customer_TB_NAME, columns, selection, selectionArgs, null, null, null );
+
+        if (cursor.moveToFirst ( )) {
+            customerId = cursor.getInt ( cursor.getColumnIndex ( Customer_CLN_ID ) );
+        }
+
+        cursor.close ( );
+        return customerId;
+    }
+
+    @SuppressLint("Range")
+    public Customer getUserBYName(String Name) {
+        SQLiteDatabase db = getReadableDatabase ( );
+        Cursor cursor = db.rawQuery ( "SELECT * FROM " + Customer_TB_NAME + " WHERE " + Customer_CLN_Name + " =?", new String[]{String.valueOf ( Name )} );
+        if (cursor.moveToFirst ( )) {
+            int id = cursor.getInt ( cursor.getColumnIndex ( Customer_CLN_ID ) );
+            String name = cursor.getString ( cursor.getColumnIndex ( Customer_CLN_Name ) );
+            String emile = cursor.getString ( cursor.getColumnIndex ( Customer_CLN_EMILE ) );
+            String password = cursor.getString ( cursor.getColumnIndex ( Customer_CLN_PASSWORD ) );
+            Customer User = new Customer ( name, password, emile );
+            cursor.close ( );
+            return User;
+        }
+
+        return null;
+    }
+
     public boolean checkUserAdmin(String username, String password) {
         SQLiteDatabase db = this.getReadableDatabase ( );
         Cursor cursor = db.rawQuery ( String.format ( "SELECT * FROM %s WHERE %s = ? AND %s = ?", Admin_TB_NAME, DB_CLN_NAME, DB_CLN_PASSWORD ), new String[]{username, password} );
@@ -256,6 +225,33 @@ import java.util.List;
         return count > 0;
     }
 
+    @SuppressLint("Range")
+    public int getCustomerIdByName2(String name) {
+        SQLiteDatabase db = getReadableDatabase ( );
+
+        int customerId = -1;
+
+        if (name == null) {
+            throw new IllegalArgumentException ( "Name cannot be null" );
+        }
+
+        // Perform the query
+        String[] columns = {Customer_CLN_ID};
+        String selection = "name = ?";
+        String[] selectionArgs = {name};
+        Cursor cursor = db.query ( Customer_TB_NAME, columns, selection, selectionArgs, null, null, null );
+
+        // Retrieve the customer ID from the cursor
+        if (cursor.moveToFirst ( )) {
+            customerId = cursor.getInt ( cursor.getColumnIndex ( Customer_CLN_ID ) );
+        }
+
+        // Close the cursor and database connection
+        cursor.close ( );
+        db.close ( );
+
+        return customerId;
+    }
 
     public boolean checkUserNameAdmin(String username) {
         SQLiteDatabase db = this.getReadableDatabase ( );
@@ -278,13 +274,16 @@ import java.util.List;
 
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
-        db.execSQL ( " DROP TABLE IF EXISTS Admin" );
+        db.execSQL ( " DROP TABLE IF EXISTS "+Admin_TABLE_NAME );
+        db.execSQL ( " DROP TABLE IF EXISTS "+Product_TABLE_NAME );
+        db.execSQL ( " DROP TABLE IF EXISTS "+Customer_CLN_ID );
+        db.execSQL ( " DROP TABLE IF EXISTS "+TABLE_PURCHASES );
         onCreate ( db );
 
     }
 
     public void insertAdmin(Admin Admin) {
-        SQLiteDatabase database = getReadableDatabase ( );
+        SQLiteDatabase database = getWritableDatabase ( );
         ContentValues values = new ContentValues ( );
         values.put ( DB_CLN_NAME, Admin.getUserName ( ) );
         values.put ( DB_CLN_PASSWORD, Admin.getPassword ( ) );
@@ -322,6 +321,33 @@ import java.util.List;
         db.close ( );
     }
 
+    //    public void deleteProductCustomer(int customerId, int productId) {
+//        SQLiteDatabase db = this.getWritableDatabase();
+//        String whereClause = COLUMN_CUSTOMER_ID + " = ? AND " + COLUMN_PRODUCT_ID + " = ?";
+//        String[] whereArgs = {String.valueOf(customerId), String.valueOf(productId)};
+//        db.delete(TABLE_PURCHASES, whereClause, whereArgs);
+//        db.close();
+//    }
+    public void deleteProductCustomer(int customerId, int productId) {
+        SQLiteDatabase db = this.getWritableDatabase ( );
+        String whereClause = COLUMN_CUSTOMER_ID + " = ? AND " + COLUMN_PRODUCT_ID + " = ?";
+        String[] whereArgs = {String.valueOf ( productId ), String.valueOf ( customerId )};
+        db.delete ( TABLE_PURCHASES, whereClause, whereArgs );
+        db.close ( );
+    }
+
+    public void
+    updateQuantity(int productId, int q) {
+        SQLiteDatabase db = this.getWritableDatabase ( );
+        ContentValues values = new ContentValues ( );
+        values.put ( Product_CLN_quantity, q );
+        String whereClause = Product_CLN_ID + " = ?";
+        String[] whereArgs = {String.valueOf ( productId )};
+        Log.d ( "updateTest", "updateProduct: " + productId );
+        db.update ( Product_TABLE_NAME, values, whereClause, whereArgs );
+        db.close ( );
+    }
+
     public void
     updateCustomer(String Name, String newName, String password, String emile) {
         SQLiteDatabase db = this.getWritableDatabase ( );
@@ -340,7 +366,11 @@ import java.util.List;
         String[] args = {String.valueOf ( id )};
         int result = db.delete ( Product_TABLE_NAME, "id=?", args );
     }
-
+    public void deleteProductC(int id) {
+        SQLiteDatabase db = getWritableDatabase ( );
+        String[] args = {String.valueOf ( id )};
+        int result = db.delete ( Product_TABLE_NAME, "id=?", args );
+    }
     @SuppressLint("Range")
     public ArrayList<Product> getAllProduct() {
         ArrayList<Product> products = new ArrayList<> ( );
