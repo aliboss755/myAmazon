@@ -154,6 +154,7 @@
         <activity
             android:name=".screenActivity1"
             android:exported="true">
+
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 

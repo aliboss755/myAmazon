@@ -2,12 +2,13 @@ package com.example.myamazon;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.view.View;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.myamazon.databinding.ActivityVisaPaymentBinding;
+
+import java.util.Objects;
 
 public class activity_visa_payment extends AppCompatActivity {
     ActivityVisaPaymentBinding binding;
@@ -21,16 +22,16 @@ public class activity_visa_payment extends AppCompatActivity {
         setContentView ( binding.getRoot ( ) );
         try {
             binding.payNowBtn.setOnClickListener ( v -> {
-                name = binding.nameEt.getText ( ).toString ( );
-                date = binding.dateVisaTextViewEt.getText ( ).toString ( );
-                cvvCard =  binding.cvvVisaTextViewEt.getText ( ).toString ( ) ;
-                cardNumber =  binding.visaNumberTextViewEt.getText ( ).toString ( ) ;
+                name = Objects.requireNonNull ( binding.nameEt.getText ( ) ).toString ( );
+                date = Objects.requireNonNull ( binding.dateVisaTextViewEt.getText ( ) ).toString ( );
+                cvvCard =  Objects.requireNonNull ( binding.cvvVisaTextViewEt.getText ( ) ).toString ( ) ;
+                cardNumber =  Objects.requireNonNull ( binding.visaNumberTextViewEt.getText ( ) ).toString ( ) ;
 
 
                 boolean check=(validationDataCard ( name,date,cardNumber,cvvCard ));
                 if (check)
                 {
-                    startActivity ( new Intent (getBaseContext (),Complete_Order_Successfully.class) );
+                    startActivity ( new Intent (getBaseContext (),Complete_Order_Successfully.class).putExtra ( "name", getIntent ( ).getStringExtra ( "name" ) )  );
                     finish ();
 
                 }else

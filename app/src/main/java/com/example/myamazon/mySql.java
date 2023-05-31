@@ -69,6 +69,26 @@ class mySql extends SQLiteOpenHelper {
 
     }
 
+    public ArrayList<Integer> getAllProductsForCustomer(int customerId) {
+        ArrayList<Integer> productList = new ArrayList<> ( );
+        SQLiteDatabase db = getReadableDatabase ( );
+
+        String query = "SELECT " + COLUMN_PRODUCT_ID + " FROM " + TABLE_PURCHASES +
+                " WHERE " + COLUMN_CUSTOMER_ID + " = " + customerId;
+
+        Cursor cursor = db.rawQuery ( query, null );
+        if (cursor.moveToFirst ( )) {
+            do {
+                @SuppressLint("Range") int productId = cursor.getInt ( cursor.getColumnIndex ( COLUMN_PRODUCT_ID ) );
+                productList.add ( productId );
+            } while (cursor.moveToNext ( ));
+        }
+
+        cursor.close ( );
+        db.close ( );
+        return productList;
+    }
+
     public void associateProductWithCustomer(int productId, int customerId) {
         SQLiteDatabase db = getWritableDatabase ( );
         ContentValues values = new ContentValues ( );
@@ -77,18 +97,17 @@ class mySql extends SQLiteOpenHelper {
         db.insert ( TABLE_PURCHASES, null, values );
         db.close ( );
     }
+
     @SuppressLint("Range")
     public List<Product> getProductsByCustomer2(int customerId) {
         List<Product> products = new ArrayList<> ( );
-
         SQLiteDatabase db = getReadableDatabase ( );
-
         String query = "SELECT p.* FROM " + Product_TABLE_NAME + " p " +
                 "JOIN " + TABLE_PURCHASES + " pc ON p." + Product_CLN_ID + " = pc." + COLUMN_PRODUCT_ID + " " +
                 "WHERE pc." + COLUMN_CUSTOMER_ID + " = ?";
-
         String[] selectionArgs = {String.valueOf ( customerId )};
         Cursor cursor = db.rawQuery ( query, selectionArgs );
+
         if (cursor != null && cursor.moveToFirst ( )) {
             do {
                 int id = cursor.getInt ( cursor.getColumnIndex ( Product_CLN_ID ) );
@@ -97,7 +116,7 @@ class mySql extends SQLiteOpenHelper {
                 String description = cursor.getString ( cursor.getColumnIndex ( Product_CLN_description ) );
                 double prise = cursor.getDouble ( cursor.getColumnIndex ( Product_CLN_price ) );
                 int quantity = cursor.getInt ( cursor.getColumnIndex ( Product_CLN_quantity ) );
-                Product product = new Product ( name,img, description, prise, quantity );
+                Product product = new Product ( name, img, description, prise, quantity );
                 products.add ( product );
             } while (cursor.moveToNext ( ));
 
@@ -274,10 +293,10 @@ class mySql extends SQLiteOpenHelper {
 
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
-        db.execSQL ( " DROP TABLE IF EXISTS "+Admin_TABLE_NAME );
-        db.execSQL ( " DROP TABLE IF EXISTS "+Product_TABLE_NAME );
-        db.execSQL ( " DROP TABLE IF EXISTS "+Customer_CLN_ID );
-        db.execSQL ( " DROP TABLE IF EXISTS "+TABLE_PURCHASES );
+        db.execSQL ( " DROP TABLE IF EXISTS " + Admin_TABLE_NAME );
+        db.execSQL ( " DROP TABLE IF EXISTS " + Product_TABLE_NAME );
+        db.execSQL ( " DROP TABLE IF EXISTS " + Customer_TB_NAME );
+        db.execSQL ( " DROP TABLE IF EXISTS " + TABLE_PURCHASES );
         onCreate ( db );
 
     }
@@ -328,10 +347,11 @@ class mySql extends SQLiteOpenHelper {
 //        db.delete(TABLE_PURCHASES, whereClause, whereArgs);
 //        db.close();
 //    }
-    public void deleteProductCustomer(int customerId, int productId) {
+    public void deleteProductCustomer(int customerId, int i
+    ) {
         SQLiteDatabase db = this.getWritableDatabase ( );
-        String whereClause = COLUMN_CUSTOMER_ID + " = ? AND " + COLUMN_PRODUCT_ID + " = ?";
-        String[] whereArgs = {String.valueOf ( productId ), String.valueOf ( customerId )};
+        String whereClause = COLUMN_CUSTOMER_ID + " = ? ";
+        String[] whereArgs = {String.valueOf ( customerId )};
         db.delete ( TABLE_PURCHASES, whereClause, whereArgs );
         db.close ( );
     }
@@ -366,11 +386,13 @@ class mySql extends SQLiteOpenHelper {
         String[] args = {String.valueOf ( id )};
         int result = db.delete ( Product_TABLE_NAME, "id=?", args );
     }
+
     public void deleteProductC(int id) {
         SQLiteDatabase db = getWritableDatabase ( );
         String[] args = {String.valueOf ( id )};
         int result = db.delete ( Product_TABLE_NAME, "id=?", args );
     }
+
     @SuppressLint("Range")
     public ArrayList<Product> getAllProduct() {
         ArrayList<Product> products = new ArrayList<> ( );

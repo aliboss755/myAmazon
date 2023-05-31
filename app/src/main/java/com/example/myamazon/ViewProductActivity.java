@@ -99,21 +99,7 @@ public class ViewProductActivity extends AppCompatActivity implements OnItemClic
         binding.productRv.setAdapter ( adepter );
         binding.productRv.setLayoutManager ( new GridLayoutManager ( this, 2, LinearLayoutManager.VERTICAL, false ) );
         binding.productRv.setHasFixedSize ( true );
-        binding.BottomNavigationView.setOnNavigationItemSelectedListener ( item -> {
-            // Handle item selection here
-            switch (item.getItemId ( )) {
-
-                case R.id.add:
-                    Intent intent = new Intent ( getBaseContext ( ), AddNewProductActivity.class );
-                    launcher.launch ( intent );
-                    return true;
-                case R.id.persone:
-                    startActivity ( new Intent ( ViewProductActivity.this, ViewAllCustomerActivity.class ) );
-
-                    return true;
-            }
-            return true;
-        } );
+        binding.BottomNavigationView.setOnNavigationItemSelectedListener ( this::onNavigationItemSelected2 );
 
 
         if (ContextCompat.checkSelfPermission ( this, Manifest.permission.WRITE_EXTERNAL_STORAGE ) != PackageManager.PERMISSION_GRANTED) {
@@ -168,9 +154,8 @@ public class ViewProductActivity extends AppCompatActivity implements OnItemClic
     @SuppressLint("NotifyDataSetChanged")
     @Override
     public void onItemClick(View view, int position, int id) {
-        int x = id;
         Intent intent = new Intent ( getBaseContext ( ), MainActivity.class );
-        intent.putExtra ( "PRODUCT_KEY", x );
+        intent.putExtra ( "PRODUCT_KEY", id );
         intent.putExtra ( "description", products.get ( position ).getDescription ( ) );
         intent.putExtra ( "price", products.get ( position ).getPrice ( ) );
         intent.putExtra ( "q", products.get ( position ).getQuantity ( ) );
@@ -189,4 +174,20 @@ public class ViewProductActivity extends AppCompatActivity implements OnItemClic
         return false;
     }
 
+    @SuppressLint("NonConstantResourceId")
+    private boolean onNavigationItemSelected2(MenuItem item) {
+        // Handle item selection here
+        switch (item.getItemId ( )) {
+
+            case R.id.add:
+                Intent intent = new Intent ( getBaseContext ( ), AddNewProductActivity.class );
+                launcher.launch ( intent );
+                return true;
+            case R.id.persone:
+                startActivity ( new Intent ( ViewProductActivity.this, ViewAllCustomerActivity.class ) );
+
+                return true;
+        }
+        return true;
+    }
 }

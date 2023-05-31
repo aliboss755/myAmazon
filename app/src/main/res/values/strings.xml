@@ -1,31 +1,28 @@
 <resources>
-    <string name="app_name">Myamazon</string>
+    <string name="app_name">My amazon</string>
     <string name="todo">TODO</string>
     <string name="product_name">Product Name</string>
-    <string name="product_quantity">Product quantity</string>
+    <string name="product_Quantity">Product quantity</string>
     <string name="product_price">Product Price</string>
     <string name="product_description">Product Description</string>
-    <string name="product_quantit">product quantity</string>
+    <string name="product_quantity">product quantity</string>
     <string name="create">Create Account</string>
     <string name="sing_in">Sing In</string>
     <string name="user_name">User Name</string>
     <string name="emile_address">Emile address</string>
     <string name="password">Password</string>
     <string name="todos">TODO</string>
-    <string name="dis">Love cum dolor sit amet, consectetur elit, sed do eius mod
-        tempor incididunt labore et dolore magna
-        aliqua. Ut enim ad minim</string>
-    <string name="scrren1tv">Unlimited
-                            amazing gifts</string>
+    <string name="screen1tv">Unlimited
+       amazing gifts</string>
     <string name="title">title</string>
     <string name="t">TODO</string>
     <string name="passwords">Password</string>
     <string name="user_names">User Name</string>
     <string name="customer">customer</string>
     <string name="username">UserName</string>
-    <string name="emileet">EmileEt</string>
+    <string name="email_Et">EmileEt</string>
     <string name="your_emile">Your Emile</string>
-    <string name="passwordet">PasswordEt</string>
+    <string name="password_Et">PasswordEt</string>
     <string name="your_password">Your Password</string>
     <string name="Username">UserName</string>
     <string name="user_name2">User Name</string>
@@ -36,7 +33,8 @@
     <string name="close_nav">Close Navigation Drawer</string>
     <string name="hello_blank_fragment">hello_blank_fragment</string>
     <string name="total_price" />
-    <string name="_10" />
-    <string name="confirm_dorder" />
+
+    <string name="confirm_order" />
     <string name="price">price</string>
+    <string name="order_to">Order To</string>
 </resources>

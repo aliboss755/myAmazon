@@ -70,7 +70,7 @@ public class ProductAdepter extends RecyclerView.Adapter<ProductAdepter.ProductV
         return products.size ( );
     }
 
-    class ProductViewHolder extends RecyclerView.ViewHolder {
+    static class ProductViewHolder extends RecyclerView.ViewHolder {
         TextView title, price, description;
         ImageView image;
         public ProductViewHolder(@NonNull CustomProdectBinding binding) {
