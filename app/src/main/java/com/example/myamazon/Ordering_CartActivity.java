@@ -6,6 +6,7 @@ import android.graphics.Canvas;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
@@ -41,7 +42,7 @@ public class Ordering_CartActivity extends AppCompatActivity implements OnItemCl
         Intent intent = getIntent ( );
         productId = intent.getIntExtra ( "productId", -1 );
         customerId = intent.getIntExtra ( "customerId", -1 );
-        products = ( ArrayList<Product> ) mySql.getProductsByCustomer2 ( customerId );
+        products = ( ArrayList<Product> ) mySql.getAllProductsInCart ( customerId );
         adepter = new CategoryAdapter.ProductAdepter2 ( products, this );
         binding.productRv.setAdapter ( adepter );
         adepter.notifyDataSetChanged ( );
@@ -49,6 +50,11 @@ public class Ordering_CartActivity extends AppCompatActivity implements OnItemCl
         binding.productRv.setHasFixedSize ( true );
         itemTouchHelper = new ItemTouchHelper ( simpleCallback );
         itemTouchHelper.attachToRecyclerView ( binding.productRv );
+        int sum =0;
+        for (Product product:products){
+           sum+= mySql.getTotalProductCostForCustomer (customerId,product.getId ()  );
+        }
+        Toast.makeText ( this, ""+sum, Toast.LENGTH_SHORT ).show ( );
     }
 
     @SuppressLint("NotifyDataSetChanged")
@@ -75,6 +81,7 @@ public class Ordering_CartActivity extends AppCompatActivity implements OnItemCl
             return false;
         }
 
+        @SuppressLint("NotifyDataSetChanged")
         @Override
         public void onSwiped(@NonNull RecyclerView.ViewHolder viewHolder, int direction) {
 
@@ -83,8 +90,12 @@ public class Ordering_CartActivity extends AppCompatActivity implements OnItemCl
                 case ItemTouchHelper.LEFT:
                     deleteMovie = String.valueOf ( products.get ( position ) );
                     products.remove ( position );
-                    mySql.deleteProductCustomer ( customerId );
+                    Toast.makeText ( Ordering_CartActivity.this, "customerId"+customerId, Toast.LENGTH_SHORT ).show ( );
+                    Toast.makeText ( Ordering_CartActivity.this, "productId"+productId, Toast.LENGTH_SHORT ).show ( );
+
+                    mySql.deleteFromCart ( customerId,productId);
                     adepter.notifyItemRemoved ( position );
+                    adepter.notifyDataSetChanged ();
                     Snackbar.make ( binding.productRv, "Delete Recycler" + (position + 1), Snackbar.LENGTH_LONG )
                             .setAction ( "Undo", v -> {
                                 products.add ( position, products.get ( position ) );

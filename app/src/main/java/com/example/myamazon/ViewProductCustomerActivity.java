@@ -29,6 +29,7 @@ public class ViewProductCustomerActivity extends AppCompatActivity implements On
     mySql dataBase;
     boolean isCart;
     int id;
+    int productId;
     @SuppressLint("NotifyDataSetChanged")
     ActivityResultLauncher<Intent> launcher = registerForActivityResult (
             new ActivityResultContracts.StartActivityForResult ( ),
@@ -37,6 +38,9 @@ public class ViewProductCustomerActivity extends AppCompatActivity implements On
                     products = dataBase.getAllProduct ( );
                     adepter.setProducts ( products );
                     adepter.notifyDataSetChanged ( );
+                } else if (result.getResultCode ( ) == 1) {
+                    assert false;
+                    productId = result.getData ( ).getIntExtra ( "productId", -1 );
                 }
             }
     );
@@ -65,7 +69,7 @@ public class ViewProductCustomerActivity extends AppCompatActivity implements On
             // Handle item selection here
             switch (item.getItemId ( )) {
                 case R.id.bag:
-                    launcher.launch ( new Intent ( getBaseContext ( ), Ordering_CartActivity.class ).putExtra ( "customerId", id ) );
+                    launcher.launch ( new Intent ( getBaseContext ( ), Ordering_CartActivity.class ).putExtra ( "customerId", id ).putExtra ( "productId", productId ) );
                     return true;
                 case R.id.persone:
                     startActivity ( new Intent ( getBaseContext ( ), UserPageActivity.class ).putExtra ( "name", userName ).putExtra ( "id", id ) );
@@ -119,6 +123,7 @@ public class ViewProductCustomerActivity extends AppCompatActivity implements On
 
     @Override
     public void onItemClick(View view, int position, int id) {
+        productId = id;
         Intent intent = new Intent ( getBaseContext ( ), InfoProductCustomerActivity.class );
         intent.putExtra ( "PRODUCT_KEY", position );
         intent.putExtra ( "userName", userName );
@@ -127,7 +132,7 @@ public class ViewProductCustomerActivity extends AppCompatActivity implements On
         intent.putExtra ( "q", products.get ( position ).getQuantity ( ) );
         intent.putExtra ( "name", products.get ( position ).getName ( ) );
         intent.putExtra ( "image", products.get ( position ).getImage ( ) );
-        intent.putExtra ( "index", id );
+        intent.putExtra ( "productId", id );
         try {
             intent.putExtra ( "id", dataBase.getCustomerIdByName ( userName ) );
         } catch (Exception ignored) {

@@ -34,7 +34,7 @@ public class InfoProductCustomerActivity extends AppCompatActivity implements On
         Intent intent = getIntent ( );
         int quantity = intent.getIntExtra ( "q", 10 );
         String name = intent.getStringExtra ( "name" );
-        productId = intent.getIntExtra ( "index", 20 );
+        productId = intent.getIntExtra ( "productId", 20 );
         customerId = intent.getIntExtra ( "id", 20 );
         String description = intent.getStringExtra ( "description" );
         double price = intent.getDoubleExtra ( "price", 30 );
@@ -44,6 +44,7 @@ public class InfoProductCustomerActivity extends AppCompatActivity implements On
         binding.productPrice.setText ( "$" + price );
         binding.ProductImage.setImageURI ( Uri.parse ( image ) );
         disable ( );
+
         binding.decrementBtn.setOnClickListener ( v -> {
             newQuantity = Integer.parseInt ( binding.quantity.getText ( ).toString ( ) );
             if (newQuantity <= 1) {
@@ -67,10 +68,13 @@ public class InfoProductCustomerActivity extends AppCompatActivity implements On
         binding.addToCard.setOnClickListener ( v -> {
             try {
                 if (quantity > newQuantity) {
-                    dataBase.associateProductWithCustomer ( productId , customerId );
+                    dataBase.addToCart2 ( customerId
+                            , productId,newQuantity );
                    q= Integer.parseInt ( binding.quantity.getText ().toString () );
                  int sum= dataBase.getProductQuantityForCustomer ( customerId );
                     Toast.makeText ( this, ""+sum, Toast.LENGTH_SHORT ).show ( );
+
+                    setResult ( 1,new Intent (  ).putExtra ( "productId",productId ) );
                     finish ( );
                 }
             } catch (Exception ignored) {
@@ -82,7 +86,7 @@ public class InfoProductCustomerActivity extends AppCompatActivity implements On
                 dataBase.updateQuantity ( productId, quantity - newQuantity );
                 startActivity ( new Intent ( getBaseContext ( ), activity_checkout_shopping.class ).putExtra ( "name", getIntent ( ).getStringExtra ( "userName" ) ) );
             }
-            Toast.makeText ( this, "" + quantity + "test", Toast.LENGTH_SHORT ).show ( );
+
         } );
 
     }

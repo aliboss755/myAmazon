@@ -58,7 +58,6 @@ public class ProductAdepter extends RecyclerView.Adapter<ProductAdepter.ProductV
             holder.image.setImageResource ( R.drawable.pizza_2 );
 
         }
-
         holder.itemView.setOnClickListener ( v -> {
             if (listener != null) {
                 listener.onItemClick ( v,index , p.getId ());

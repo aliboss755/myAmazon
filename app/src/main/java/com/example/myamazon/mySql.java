@@ -38,10 +38,15 @@ class mySql extends SQLiteOpenHelper {
     private static final String TABLE_PURCHASES = "purchases";
     private static final String COLUMN_PURCHASE_CUSTOMER_ID = "customer_id";
     private static final String COLUMN_PURCHASE_PRODUCT_ID = "product_id";
-    private static final String ProductCart_TABLE_NAME="ProductCart_TABLE_NAME";
-    private static final String ProductCart_CLN_ID="ProductCart_CLN_ID";
-    private static final String ProductCart_CLN_CUSTOMER_ID ="ProductCart_CLN_CUSTOMER_ID";
-    private static final String ProductCart_CLN_PRODUCT_ID ="ProductCart_CLN_PRODUCT_ID";
+    private static final String ProductCart_TABLE_NAME = "ProductCart_TABLE_NAME";
+    private static final String ProductCart_CLN_ID = "ProductCart_CLN_ID";
+    private static final String ProductCart_CLN_CUSTOMER_ID = "ProductCart_CLN_CUSTOMER_ID";
+    private static final String ProductCart_CLN_PRODUCT_ID = "ProductCart_CLN_PRODUCT_ID";
+    private static final String CartItems_TABLE_NAME = "CartItems_TABLE_NAME";
+    private static final String CartItems_CLN_ID = "CartItems_CLN_ID";
+    private static final String CartItems_CLN_CUSTOMER_ID = "CartItems_CLN_CUSTOMER_ID";
+    private static final String CartItems_CLN_PRODUCT_ID = "CartItems_CLN_PRODUCT_ID";
+    private static final String CartItems_CLN_QUANTITY = "CartItems_CLN_QUANTITY";
     public static final int DB_VERSION = 4;
 
     public mySql(@Nullable Context context) {
@@ -50,17 +55,17 @@ class mySql extends SQLiteOpenHelper {
 
     @Override
     public void onCreate(SQLiteDatabase db) {
-        db.execSQL("CREATE TABLE " + ProductCart_TABLE_NAME + " (" +
-                ProductCart_CLN_ID + " INTEGER PRIMARY KEY AUTOINCREMENT, " +
-                ProductCart_CLN_CUSTOMER_ID + " INTEGER, " +
-                ProductCart_CLN_PRODUCT_ID + " INTEGER, " +
-                "FOREIGN KEY(" + ProductCart_CLN_CUSTOMER_ID + ") REFERENCES " + Customer_TB_NAME + "(" + Customer_CLN_ID + ")," +
-                "FOREIGN KEY(" + ProductCart_CLN_PRODUCT_ID + ") REFERENCES " + Product_TABLE_NAME + "(" + Product_CLN_ID + ")" +
-                ");");
+        db.execSQL ( "CREATE TABLE " + CartItems_TABLE_NAME + " (" +
+                CartItems_CLN_ID + " INTEGER PRIMARY KEY AUTOINCREMENT, " +
+                CartItems_CLN_CUSTOMER_ID + " INTEGER, " +
+                CartItems_CLN_PRODUCT_ID + " INTEGER, " +
+                CartItems_CLN_QUANTITY + " INTEGER, " +
+                "FOREIGN KEY(" + CartItems_CLN_CUSTOMER_ID + ") REFERENCES " + Customer_TB_NAME + "(" + Customer_CLN_ID + ")," +
+                "FOREIGN KEY(" + CartItems_CLN_PRODUCT_ID + ") REFERENCES " + Product_TABLE_NAME + "(" + Product_CLN_ID + ")" +
+                ");" );
 
         db.execSQL ( "CREATE TABLE " + Admin_TB_NAME + " (" + DB_CLN_ID + " INTEGER PRIMARY  KEY AUTOINCREMENT ," +
                 "" + DB_CLN_NAME + " Text , " + DB_CLN_PASSWORD + " Text, " + DB_CLN_EMILE + " TEXT )" );
-
 
 
         db.execSQL ( "CREATE TABLE " + Customer_TB_NAME + " (" + Customer_CLN_ID + " INTEGER PRIMARY  KEY AUTOINCREMENT ," +
@@ -80,39 +85,167 @@ class mySql extends SQLiteOpenHelper {
                 ");" );
 
     }
-    public void addToCart(int customerId, int productId) {
-        SQLiteDatabase db = getWritableDatabase();
-        ContentValues values = new ContentValues();
-        values.put(ProductCart_CLN_CUSTOMER_ID, customerId);
-        values.put(ProductCart_CLN_PRODUCT_ID, productId);
-        db.insert(ProductCart_TABLE_NAME, null, values);
-        db.close();
+
+    public void addToCart(int customerId, int productId, int quantity) {
+        SQLiteDatabase db = getWritableDatabase ( );
+
+        ContentValues values = new ContentValues ( );
+        values.put ( CartItems_CLN_CUSTOMER_ID, customerId );
+        values.put ( CartItems_CLN_PRODUCT_ID, productId );
+        values.put ( CartItems_CLN_QUANTITY, quantity );
+        db.insert ( CartItems_TABLE_NAME, null, values );
+
+        db.close ( );
     }
 
-    public void deleteFromCart(int customerId, int productId) {
-        SQLiteDatabase db = getWritableDatabase();
-        String whereClause = ProductCart_CLN_CUSTOMER_ID + " = ? AND " + ProductCart_CLN_PRODUCT_ID + " = ?";
-        String[] whereArgs = {String.valueOf(customerId), String.valueOf(productId)};
-        db.delete(ProductCart_TABLE_NAME, whereClause, whereArgs);
-        db.close();
-    }
+    public void addToCart2(int customerId, int productId, int quantity) {
+        SQLiteDatabase db = getWritableDatabase ( );
 
-    public int getTotalProductQuantityForCustomer(int customerId) {
-        int totalQuantity = 0;
+        // Check if the product already exists in the cart
+        String selection = CartItems_CLN_CUSTOMER_ID + " = ? AND " + CartItems_CLN_PRODUCT_ID + " = ?";
+        String[] selectionArgs = {String.valueOf ( customerId ), String.valueOf ( productId )};
+        Cursor cursor = db.query ( CartItems_TABLE_NAME, null, selection, selectionArgs, null, null, null );
+
+        if (cursor != null && cursor.getCount ( ) > 0) {
+            // Product already exists in the cart, update its stock
+            cursor.moveToFirst ( );
+            int currentQuantity = cursor.getInt ( cursor.getColumnIndexOrThrow ( CartItems_CLN_QUANTITY ) );
+            int newQuantity = currentQuantity + quantity;
+
+            ContentValues values = new ContentValues ( );
+            values.put ( CartItems_CLN_QUANTITY, newQuantity );
+
+            db.update ( CartItems_TABLE_NAME, values, selection, selectionArgs );
+        } else {
+            // Product does not exist in the cart, add it
+            ContentValues values = new ContentValues ( );
+            values.put ( CartItems_CLN_CUSTOMER_ID, customerId );
+            values.put ( CartItems_CLN_PRODUCT_ID, productId );
+            values.put ( CartItems_CLN_QUANTITY, quantity );
+
+            db.insert ( CartItems_TABLE_NAME, null, values );
+        }
+
+        if (cursor != null) {
+            cursor.close ( );
+        }
+
+        db.close ( );
+    }
+    public double getTotalProductCostForCustomer(int customerId, int productId) {
+        double totalCost = 0.0;
         SQLiteDatabase db = getReadableDatabase();
 
-        String query = "SELECT SUM(" + Product_CLN_quantity + ") FROM " + Product_TABLE_NAME +
-                " WHERE " + COLUMN_CUSTOMER_ID + " = " + customerId;
+        String query = "SELECT (" + CartItems_CLN_QUANTITY + " * " + Product_CLN_price + ") AS total_cost " +
+                "FROM " + CartItems_TABLE_NAME +
+                " INNER JOIN " + Product_TABLE_NAME +
+                " ON " + CartItems_TABLE_NAME + "." + CartItems_CLN_PRODUCT_ID +
+                " = " + Product_TABLE_NAME + "." + Product_CLN_ID +
+                " WHERE " + CartItems_CLN_CUSTOMER_ID + " = ? AND " + CartItems_CLN_PRODUCT_ID + " = ?";
 
-        Cursor cursor = db.rawQuery(query, null);
+        String[] selectionArgs = { String.valueOf(customerId), String.valueOf(productId) };
+
+        Cursor cursor = db.rawQuery(query, selectionArgs);
+
         if (cursor.moveToFirst()) {
-            totalQuantity = cursor.getInt(0);
+            totalCost = cursor.getDouble(cursor.getColumnIndexOrThrow("total_cost"));
         }
 
         cursor.close();
         db.close();
+
+        return totalCost;
+    }
+
+    public void deleteFromCart(int customerId, int productId) {
+        SQLiteDatabase db = getWritableDatabase ( );
+
+        String selection = CartItems_CLN_CUSTOMER_ID + " = ? AND " + CartItems_CLN_PRODUCT_ID + " = ?";
+        String[] selectionArgs = {String.valueOf ( customerId ), String.valueOf ( productId )};
+
+        db.delete ( CartItems_TABLE_NAME, selection, selectionArgs );
+
+        db.close ( );
+    }
+
+    @SuppressLint("Range")
+    public List<Product> getAllProductsInCart(int customerId) {
+        List<Product> products = new ArrayList<> ( );
+        SQLiteDatabase db = getReadableDatabase ( );
+        String query = "SELECT " +
+                Product_TABLE_NAME + "." + Product_CLN_ID + ", " +
+                Product_TABLE_NAME + "." + Product_CLN_name + ", " +
+                Product_TABLE_NAME + "." + Product_CLN_image + ", " +
+                Product_TABLE_NAME + "." + Product_CLN_description + ", " +
+                Product_TABLE_NAME + "." + Product_CLN_price + ", " +
+                CartItems_CLN_QUANTITY +
+                " FROM " + CartItems_TABLE_NAME +
+                " INNER JOIN " + Product_TABLE_NAME +
+                " ON " + CartItems_TABLE_NAME + "." + CartItems_CLN_PRODUCT_ID +
+                " = " + Product_TABLE_NAME + "." + Product_CLN_ID +
+                " WHERE " + CartItems_CLN_CUSTOMER_ID + " = " + customerId;
+
+        Cursor cursor = db.rawQuery ( query, null );
+
+        while (cursor.moveToNext ( )) {
+            int productId = cursor.getInt ( cursor.getColumnIndexOrThrow ( Product_CLN_ID ) );
+            String name = cursor.getString ( cursor.getColumnIndexOrThrow ( Product_CLN_name ) );
+            String image = cursor.getString ( cursor.getColumnIndexOrThrow ( Product_CLN_image ) );
+            String description = cursor.getString ( cursor.getColumnIndexOrThrow ( Product_CLN_description ) );
+            double price = cursor.getDouble ( cursor.getColumnIndexOrThrow ( Product_CLN_price ) );
+            int quantity = cursor.getInt ( cursor.getColumnIndexOrThrow ( CartItems_CLN_QUANTITY ) );
+
+            Product product = new Product ( productId, name, image, description, price, quantity );
+            products.add ( product );
+        }
+
+        cursor.close ( );
+        db.close ( );
+
+        return products;
+    }
+
+    @SuppressLint("Range")
+    public int getTotalQuantityInCart(int customerId) {
+        int totalQuantity = 0;
+        SQLiteDatabase db = getReadableDatabase ( );
+
+        String selectQuery = "SELECT SUM(" + Product_CLN_quantity + ") AS total_quantity " +
+                "FROM " + Product_TABLE_NAME + " p " +
+                "INNER JOIN " + ProductCart_TABLE_NAME + " pc ON pc." + ProductCart_CLN_PRODUCT_ID + " = p." + Product_CLN_ID + " " +
+                "WHERE pc." + ProductCart_CLN_CUSTOMER_ID + " = ?";
+
+        String[] selectionArgs = {String.valueOf ( customerId )};
+
+        Cursor cursor = db.rawQuery ( selectQuery, selectionArgs );
+
+        if (cursor.moveToFirst ( )) {
+            totalQuantity = cursor.getInt ( cursor.getColumnIndex ( "total_quantity" ) );
+        }
+
+        cursor.close ( );
+        db.close ( );
+
         return totalQuantity;
     }
+
+    public int getTotalProductQuantityForCustomer(int customerId) {
+        int totalQuantity = 0;
+        SQLiteDatabase db = getReadableDatabase ( );
+
+        String query = "SELECT SUM(" + Product_CLN_quantity + ") FROM " + Product_TABLE_NAME +
+                " WHERE " + COLUMN_CUSTOMER_ID + " = " + customerId;
+
+        Cursor cursor = db.rawQuery ( query, null );
+        if (cursor.moveToFirst ( )) {
+            totalQuantity = cursor.getInt ( 0 );
+        }
+
+        cursor.close ( );
+        db.close ( );
+        return totalQuantity;
+    }
+
     public ArrayList<Integer> getAllProductsForCustomer(int customerId) {
         ArrayList<Integer> productList = new ArrayList<> ( );
         SQLiteDatabase db = getReadableDatabase ( );
@@ -141,13 +274,15 @@ class mySql extends SQLiteOpenHelper {
         db.insert ( TABLE_PURCHASES, null, values );
         db.close ( );
     }
+
     public void deleteProductFromCustomer(int productId) {
-        SQLiteDatabase db = getWritableDatabase();
+        SQLiteDatabase db = getWritableDatabase ( );
         String whereClause = COLUMN_PRODUCT_ID + " = ?";
-        String[] whereArgs = {String.valueOf(productId)};
-        db.delete(TABLE_PURCHASES, whereClause, whereArgs);
-        db.close();
+        String[] whereArgs = {String.valueOf ( productId )};
+        db.delete ( TABLE_PURCHASES, whereClause, whereArgs );
+        db.close ( );
     }
+
     @SuppressLint("Range")
     public List<Product> getProductsByCustomer2(int customerId) {
         List<Product> products = new ArrayList<> ( );
@@ -178,56 +313,70 @@ class mySql extends SQLiteOpenHelper {
         return products;
     }
 
-    public void addProductsToCustomer(int customerId, ArrayList<Integer> productIds) {
-        SQLiteDatabase db = getWritableDatabase ( );
-        db.beginTransaction ( );
-
-        try {
-            for (int productId : productIds) {
-                ContentValues values = new ContentValues ( );
-                values.put ( COLUMN_PURCHASE_CUSTOMER_ID, customerId );
-                values.put ( COLUMN_PURCHASE_PRODUCT_ID, productId );
-                db.insert ( TABLE_PURCHASES, null, values );
-            }
-            db.setTransactionSuccessful ( );
-        } finally {
-            db.endTransaction ( );
-        }
-    }
-
 
     @SuppressLint("Range")
-    public ArrayList<Product> getAllProductCustomer(int customId) {
-        ArrayList<Product> products = new ArrayList<> ( );
+    public List<ProductCart> getAllProductsInCart10() {
+        List<ProductCart> products = new ArrayList<> ( );
+
         SQLiteDatabase db = getReadableDatabase ( );
-        try (Cursor cursor = db.rawQuery ( "SELECT * FROM " + TABLE_PURCHASES + " WHERE id = ?  ", new String[]{String.valueOf ( customId )} )) {
-            if (cursor.moveToFirst ( )) {
-                do {
-                    int id = cursor.getInt ( cursor.getColumnIndex ( Product_CLN_ID ) );
-                    String name = cursor.getString ( cursor.getColumnIndex ( Product_CLN_name ) );
-                    String img = cursor.getString ( cursor.getColumnIndex ( Product_CLN_image ) );
-                    String description = cursor.getString ( cursor.getColumnIndex ( Product_CLN_description ) );
-                    double prise = cursor.getDouble ( cursor.getColumnIndex ( Product_CLN_price ) );
-                    int quantity = cursor.getInt ( cursor.getColumnIndex ( Product_CLN_quantity ) );
-                    Product p = new Product ( name, img, description, prise, quantity );
-                    p.setId ( id );
-                    products.add ( p );
-                } while (cursor.moveToNext ( ));
-                cursor.close ( );
-            }
+
+        String query = "SELECT " +
+                Product_TABLE_NAME + "." + Product_CLN_ID + ", " +
+                Product_TABLE_NAME + "." + Product_CLN_name + ", " +
+                Product_TABLE_NAME + "." + Product_CLN_image + ", " +
+                Product_TABLE_NAME + "." + Product_CLN_description + ", " +
+                Product_TABLE_NAME + "." + Product_CLN_price + ", " +
+                CartItems_CLN_QUANTITY +
+                " FROM " + CartItems_TABLE_NAME +
+                " INNER JOIN " + Product_TABLE_NAME +
+                " ON " + CartItems_TABLE_NAME + "." + CartItems_CLN_PRODUCT_ID +
+                " = " + Product_TABLE_NAME + "." + Product_CLN_ID;
+
+        Cursor cursor = db.rawQuery ( query, null );
+
+        while (cursor.moveToNext ( )) {
+            int productId = cursor.getInt ( cursor.getColumnIndexOrThrow ( Product_CLN_ID ) );
+            String name = cursor.getString ( cursor.getColumnIndexOrThrow ( Product_CLN_name ) );
+            String image = cursor.getString ( cursor.getColumnIndexOrThrow ( Product_CLN_image ) );
+            String description = cursor.getString ( cursor.getColumnIndexOrThrow ( Product_CLN_description ) );
+            double price = cursor.getDouble ( cursor.getColumnIndexOrThrow ( Product_CLN_price ) );
+            int quantity = cursor.getInt ( cursor.getColumnIndexOrThrow ( CartItems_CLN_QUANTITY ) );
+
+            ProductCart product = new ProductCart ( productId, name, image, description, price, quantity );
+            products.add ( product );
         }
-
-
+        cursor.close ( );
+        db.close ( );
         return products;
     }
 
-    public boolean deleteItemFromBasket(int customerId, int productId) {
-        SQLiteDatabase db = getWritableDatabase ( );
-        String whereClause = COLUMN_CUSTOMER_ID + " = ? AND " + COLUMN_PRODUCT_ID + " = ?";
-        String[] whereArgs = {String.valueOf ( customerId ), String.valueOf ( productId )};
-        int rowsDeleted = db.delete ( TABLE_PURCHASES, whereClause, whereArgs );
+    public int getProductQuantityInCart(int customerId, int productId) {
+        SQLiteDatabase db = getReadableDatabase ( );
+
+        String[] projection = {CartItems_CLN_QUANTITY};
+        String selection = CartItems_CLN_CUSTOMER_ID + " = ? AND " + CartItems_CLN_PRODUCT_ID + " = ?";
+        String[] selectionArgs = {String.valueOf ( customerId ), String.valueOf ( productId )};
+
+        Cursor cursor = db.query (
+                CartItems_TABLE_NAME,
+                projection,
+                selection,
+                selectionArgs,
+                null,
+                null,
+                null
+        );
+
+        int quantity = 0;
+
+        if (cursor.moveToFirst ( )) {
+            quantity = cursor.getInt ( cursor.getColumnIndexOrThrow ( CartItems_CLN_QUANTITY ) );
+        }
+
+        cursor.close ( );
         db.close ( );
-        return rowsDeleted > 0;
+
+        return quantity;
     }
 
 
@@ -249,20 +398,20 @@ class mySql extends SQLiteOpenHelper {
     @SuppressLint("Range")
     public int getProductQuantityForCustomer(int customerId) {
         int totalQuantity = 0;
-        SQLiteDatabase db = getReadableDatabase();
+        SQLiteDatabase db = getReadableDatabase ( );
 
         String query = "SELECT SUM(" + Product_CLN_quantity + ") FROM " + TABLE_PURCHASES +
                 " INNER JOIN " + Product_TABLE_NAME +
                 " ON " + TABLE_PURCHASES + "." + COLUMN_PRODUCT_ID + " = " + Product_TABLE_NAME + "." + Product_CLN_ID +
                 " WHERE " + COLUMN_CUSTOMER_ID + " = " + customerId;
 
-        Cursor cursor = db.rawQuery(query, null);
-        if (cursor.moveToFirst()) {
-            totalQuantity = cursor.getInt(0);
+        Cursor cursor = db.rawQuery ( query, null );
+        if (cursor.moveToFirst ( )) {
+            totalQuantity = cursor.getInt ( 0 );
         }
 
-        cursor.close();
-        db.close();
+        cursor.close ( );
+        db.close ( );
         return totalQuantity;
     }
 
@@ -368,7 +517,7 @@ class mySql extends SQLiteOpenHelper {
         values.put ( Product_CLN_image, String.valueOf ( product.getImage ( ) ) );
         values.put ( Product_CLN_description, product.getDescription ( ) );
         values.put ( Product_CLN_price, product.getPrice ( ) );
-        values.put ( Product_CLN_quantity,product.getQuantity () );
+        values.put ( Product_CLN_quantity, product.getQuantity ( ) );
         long result = db.insert ( Product_TABLE_NAME, null, values );
         return -1 != result;
     }
