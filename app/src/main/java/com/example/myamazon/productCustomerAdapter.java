@@ -56,7 +56,6 @@ public class productCustomerAdapter extends RecyclerView.Adapter<productCustomer
             title=binding.productName;
             quantity=binding.productQuantities;
             price=binding.productPrice;
-            deleteImage=binding.productDeleted;
             productImage=binding.productImage;
 
         }

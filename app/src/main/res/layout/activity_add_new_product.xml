@@ -92,6 +92,7 @@
                 <com.google.android.material.textfield.TextInputEditText
                     android:id="@+id/product_price"
                     android:layout_width="match_parent"
+                    android:inputType="number"
                     android:layout_height="match_parent"
                     style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
                     android:hint="@string/product_price"
@@ -109,6 +110,8 @@
                     android:id="@+id/product_quantity"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
+                    android:inputType="number"
+
                     android:hint="@string/product_quantity"
                     android:textColorHint="@color/black" />
 

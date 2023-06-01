@@ -99,6 +99,7 @@ public class ViewProductActivity extends AppCompatActivity implements OnItemClic
         binding.productRv.setAdapter ( adepter );
         binding.productRv.setLayoutManager ( new GridLayoutManager ( this, 2, LinearLayoutManager.VERTICAL, false ) );
         binding.productRv.setHasFixedSize ( true );
+        //noinspection deprecation
         binding.BottomNavigationView.setOnNavigationItemSelectedListener ( this::onNavigationItemSelected2 );
 
 

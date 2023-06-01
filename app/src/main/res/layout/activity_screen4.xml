@@ -1,39 +1,43 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/primaryColor"
     tools:context=".screenActivity4">
-<FrameLayout
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:id="@+id/frameLayout"/>
-    <com.google.android.material.bottomappbar.BottomAppBar
-        android:layout_width="match_parent"
-        android:id="@+id/BottomAppBar"
-        android:background="@color/white"
-        android:layout_gravity="bottom"
-        app:fabCradleRoundedCornerRadius="@dimen/_50sdp"
-        android:layout_height="wrap_content">
-        <com.google.android.material.bottomnavigation.BottomNavigationView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:id="@+id/BottomNavigationView"
-            android:layout_marginEnd="@dimen/_20sdp"
-            app:labelVisibilityMode="labeled"
-            app:fabCradleRoundedCornerRadius="@dimen/_50sdp"
-            app:menu="@menu/bottom"/>
-    </com.google.android.material.bottomappbar.BottomAppBar>
-    <com.google.android.material.floatingactionbutton.FloatingActionButton
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:src="@drawable/nav_home"
-        android:background="@color/white"
-        app:layout_anchor="@id/BottomAppBar"
-        app:maxImageSize="@dimen/_30sdp"
-        android:backgroundTint="@color/white"
-        app:tint="@color/primaryColor"/>
 
-</androidx.coordinatorlayout.widget.CoordinatorLayout>
+<!--    <ViewFlipper-->
+<!--        android:layout_width="match_parent"-->
+<!--        android:layout_height="250dp"-->
+<!--        android:autoStart="true"-->
+<!--        android:flipInterval="2000"-->
+<!--        android:inAnimation="@android:anim/slide_out_right"-->
+<!--        app:layout_constraintBottom_toBottomOf="parent"-->
+<!--        app:layout_constraintEnd_toEndOf="parent"-->
+<!--        app:layout_constraintHorizontal_bias="0.5"-->
+<!--        app:layout_constraintStart_toStartOf="parent"-->
+<!--        app:layout_constraintTop_toTopOf="parent"-->
+<!--        app:layout_constraintVertical_bias="0.5">-->
+
+<!--        <ImageView-->
+<!--            android:id="@+id/imageView3"-->
+<!--            android:layout_width="wrap_content"-->
+<!--            android:layout_height="wrap_content"-->
+<!--            app:srcCompat="@drawable/bro"-->
+<!--             />-->
+
+<!--        <ImageView-->
+<!--            android:id="@+id/imageView4"-->
+<!--            android:layout_width="wrap_content"-->
+<!--            android:layout_height="wrap_content"-->
+<!--            app:layout_constraintEnd_toEndOf="parent"-->
+<!--            app:layout_constraintStart_toStartOf="parent"-->
+<!--            app:srcCompat="@drawable/img_11" />-->
+
+<!--        <ImageView-->
+<!--            android:id="@+id/imageView5"-->
+<!--            android:layout_width="wrap_content"-->
+<!--            android:layout_height="wrap_content"-->
+<!--            app:srcCompat="@drawable/img_10" />-->
+<!--    </ViewFlipper>-->
+</androidx.constraintlayout.widget.ConstraintLayout>

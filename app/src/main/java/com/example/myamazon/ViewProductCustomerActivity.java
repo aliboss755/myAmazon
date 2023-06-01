@@ -65,7 +65,7 @@ public class ViewProductCustomerActivity extends AppCompatActivity implements On
             // Handle item selection here
             switch (item.getItemId ( )) {
                 case R.id.bag:
-                    startActivity ( new Intent ( getBaseContext ( ), Ordering_CartActivity.class ).putExtra ( "customerId", id ) );
+                    launcher.launch ( new Intent ( getBaseContext ( ), Ordering_CartActivity.class ).putExtra ( "customerId", id ) );
                     return true;
                 case R.id.persone:
                     startActivity ( new Intent ( getBaseContext ( ), UserPageActivity.class ).putExtra ( "name", userName ).putExtra ( "id", id ) );

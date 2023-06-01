@@ -13,43 +13,41 @@
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:padding="@dimen/_10sdp"
-        >
+        android:padding="@dimen/_10sdp">
 
         <ImageView
             android:id="@+id/product_Image"
             android:layout_width="@dimen/_100sdp"
             android:layout_height="@dimen/_100sdp"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
             android:src="@drawable/hamburger"
-            />
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
 
         <TextView
             android:id="@+id/product_Name"
+            style="@style/TextAppearance.AppCompat.Headline"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            app:layout_constraintStart_toEndOf="@id/product_Image"
-            app:layout_constraintTop_toTopOf="parent"
+            android:layout_marginStart="@dimen/_10sdp"
             android:layout_marginTop="@dimen/_5sdp"
             android:text="Title"
-            android:layout_marginStart="@dimen/_10sdp"
             android:textSize="@dimen/_15ssp"
             android:textStyle="bold"
-            style="@style/TextAppearance.AppCompat.Headline"
-            />
+            app:layout_constraintStart_toEndOf="@id/product_Image"
+            app:layout_constraintTop_toTopOf="parent" />
+
         <TextView
             android:id="@+id/product_Price"
             android:layout_width="wrap_content"
-            android:textColor="@color/black"
             android:layout_height="wrap_content"
-            app:layout_constraintStart_toEndOf="@id/product_Image"
-            app:layout_constraintTop_toBottomOf="@id/product_Name"
+            android:layout_marginStart="@dimen/_10sdp"
             android:layout_marginTop="@dimen/_10sdp"
             android:text="Price"
-            android:layout_marginStart="@dimen/_10sdp"
+            android:textColor="@color/black"
             android:textSize="@dimen/_15ssp"
             android:textStyle="bold"
+            app:layout_constraintStart_toEndOf="@id/product_Image"
+            app:layout_constraintTop_toBottomOf="@id/product_Name"
 
             />
 
@@ -58,42 +56,29 @@
             android:id="@+id/rating"
             style="@style/Widget.AppCompat.RatingBar.Small"
             android:layout_width="wrap_content"
-            android:numStars="5"
-            android:rating="4.5"
+            android:layout_height="16dp"
             android:layout_marginStart="@dimen/_10sdp"
-            app:layout_constraintStart_toEndOf="@id/product_Image"
             android:layout_marginTop="@dimen/_10sdp"
-            app:layout_constraintTop_toBottomOf="@+id/product_Price"
             android:layout_marginEnd="@dimen/_10sdp"
+            android:numStars="5"
             android:progressTint="@color/yellow"
+            android:rating="4.5"
             android:secondaryProgressTint="@color/yellow"
-            android:layout_height="16dp"/>
+            app:layout_constraintStart_toEndOf="@id/product_Image"
+            app:layout_constraintTop_toBottomOf="@+id/product_Price" />
 
-        <ImageButton
-            android:id="@+id/product_deleted"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="4dp"
-            android:layout_marginEnd="4dp"
-            android:background="@color/white"
-            android:src="@drawable/ic_delet"
-            app:layout_constraintBaseline_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-
-            app:layout_constraintTop_toTopOf="parent" />
 
         <TextView
-            android:textColor="@color/black"
             android:id="@+id/product_quantities"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="56dp"
             android:text="quantity"
+            android:textColor="@color/black"
             android:textSize="@dimen/_15ssp"
             android:textStyle="bold"
 
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/product_deleted" />
+            app:layout_constraintTop_toTopOf="@+id/product_Name" />
 
 
     </androidx.constraintlayout.widget.ConstraintLayout>

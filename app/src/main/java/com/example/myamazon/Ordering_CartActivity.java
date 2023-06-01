@@ -29,22 +29,20 @@ public class Ordering_CartActivity extends AppCompatActivity implements OnItemCl
     ItemTouchHelper itemTouchHelper;
     mySql mySql;
     ArrayList<Product> products;
-    ProductAdepter adepter;
+    CategoryAdapter.ProductAdepter2 adepter;
 
     @SuppressLint("NotifyDataSetChanged")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate ( savedInstanceState );
-
         binding = ActivityOrdringCartBinding.inflate ( getLayoutInflater ( ) );
         setContentView ( binding.getRoot ( ) );
         mySql = new mySql ( this );
         Intent intent = getIntent ( );
         productId = intent.getIntExtra ( "productId", -1 );
         customerId = intent.getIntExtra ( "customerId", -1 );
-//        mySql.associateProductWithCustomer ( productId, customerId );
         products = ( ArrayList<Product> ) mySql.getProductsByCustomer2 ( customerId );
-        adepter = new ProductAdepter ( products, this );
+        adepter = new CategoryAdapter.ProductAdepter2 ( products, this );
         binding.productRv.setAdapter ( adepter );
         adepter.notifyDataSetChanged ( );
         binding.productRv.setLayoutManager ( new LinearLayoutManager ( this ) );
@@ -56,7 +54,7 @@ public class Ordering_CartActivity extends AppCompatActivity implements OnItemCl
     @SuppressLint("NotifyDataSetChanged")
     @Override
     public void onItemClick(View view, int position, int id) {
-        mySql.deleteProductCustomer ( customerId, productId );
+        mySql.deleteProductCustomer ( customerId );
         products = ( ArrayList<Product> ) mySql.getProductsByCustomer2 ( customerId );
         adepter.notifyDataSetChanged ( );
         products = ( ArrayList<Product> ) mySql.getProductsByCustomer2 ( customerId );
@@ -85,7 +83,7 @@ public class Ordering_CartActivity extends AppCompatActivity implements OnItemCl
                 case ItemTouchHelper.LEFT:
                     deleteMovie = String.valueOf ( products.get ( position ) );
                     products.remove ( position );
-                    mySql.deleteProductCustomer ( customerId, productId );
+                    mySql.deleteProductCustomer ( customerId );
                     adepter.notifyItemRemoved ( position );
                     Snackbar.make ( binding.productRv, "Delete Recycler" + (position + 1), Snackbar.LENGTH_LONG )
                             .setAction ( "Undo", v -> {

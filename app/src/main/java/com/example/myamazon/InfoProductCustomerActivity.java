@@ -21,6 +21,7 @@ public class InfoProductCustomerActivity extends AppCompatActivity implements On
     String image;
     int newQuantity = 1;
     int customerId;
+   public static int q;
     ArrayList<Product> products;
 
     @SuppressLint("SetTextI18n")
@@ -34,7 +35,6 @@ public class InfoProductCustomerActivity extends AppCompatActivity implements On
         int quantity = intent.getIntExtra ( "q", 10 );
         String name = intent.getStringExtra ( "name" );
         productId = intent.getIntExtra ( "index", 20 );
-
         customerId = intent.getIntExtra ( "id", 20 );
         String description = intent.getStringExtra ( "description" );
         double price = intent.getDoubleExtra ( "price", 30 );
@@ -67,13 +67,14 @@ public class InfoProductCustomerActivity extends AppCompatActivity implements On
         binding.addToCard.setOnClickListener ( v -> {
             try {
                 if (quantity > newQuantity) {
-                    dataBase.associateProductWithCustomer ( productId, customerId );
-                    Toast.makeText ( this, "" + quantity, Toast.LENGTH_SHORT ).show ( );
-
-                    Toast.makeText ( this, "" + quantity, Toast.LENGTH_SHORT ).show ( );
+                    dataBase.associateProductWithCustomer ( productId , customerId );
+                   q= Integer.parseInt ( binding.quantity.getText ().toString () );
+                 int sum= dataBase.getProductQuantityForCustomer ( customerId );
+                    Toast.makeText ( this, ""+sum, Toast.LENGTH_SHORT ).show ( );
                     finish ( );
                 }
             } catch (Exception ignored) {
+                Toast.makeText ( this, ""+Error.class, Toast.LENGTH_SHORT ).show ( );
             }
         } );
         binding.bayBt.setOnClickListener ( v1 -> {
