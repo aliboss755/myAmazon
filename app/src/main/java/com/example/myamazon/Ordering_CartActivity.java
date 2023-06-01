@@ -32,7 +32,7 @@ public class Ordering_CartActivity extends AppCompatActivity implements OnItemCl
     ArrayList<Product> products;
     CategoryAdapter.ProductAdepter2 adepter;
 
-    @SuppressLint("NotifyDataSetChanged")
+    @SuppressLint({"NotifyDataSetChanged", "SetTextI18n"})
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate ( savedInstanceState );
@@ -40,11 +40,18 @@ public class Ordering_CartActivity extends AppCompatActivity implements OnItemCl
         setContentView ( binding.getRoot ( ) );
         mySql = new mySql ( this );
         Intent intent = getIntent ( );
+        int q=0;
         productId = intent.getIntExtra ( "productId", -1 );
         customerId = intent.getIntExtra ( "customerId", -1 );
+        adepter.notifyDataSetChanged ();
         products = ( ArrayList<Product> ) mySql.getAllProductsInCart ( customerId );
+        adepter.notifyDataSetChanged ();
         adepter = new CategoryAdapter.ProductAdepter2 ( products, this );
         binding.productRv.setAdapter ( adepter );
+        for (Product product :products){
+            q+= product.getQuantity ();
+        }
+        binding.quantitys.setText ( String.valueOf ( q ) );
         adepter.notifyDataSetChanged ( );
         binding.productRv.setLayoutManager ( new LinearLayoutManager ( this ) );
         binding.productRv.setHasFixedSize ( true );
@@ -54,7 +61,9 @@ public class Ordering_CartActivity extends AppCompatActivity implements OnItemCl
         for (Product product:products){
            sum+= mySql.getTotalProductCostForCustomer (customerId,product.getId ()  );
         }
-        Toast.makeText ( this, ""+sum, Toast.LENGTH_SHORT ).show ( );
+        adepter.notifyDataSetChanged ();
+        binding.total.setText ( String.valueOf ( sum ) );
+        adepter.notifyDataSetChanged ();
     }
 
     @SuppressLint("NotifyDataSetChanged")
@@ -90,9 +99,6 @@ public class Ordering_CartActivity extends AppCompatActivity implements OnItemCl
                 case ItemTouchHelper.LEFT:
                     deleteMovie = String.valueOf ( products.get ( position ) );
                     products.remove ( position );
-                    Toast.makeText ( Ordering_CartActivity.this, "customerId"+customerId, Toast.LENGTH_SHORT ).show ( );
-                    Toast.makeText ( Ordering_CartActivity.this, "productId"+productId, Toast.LENGTH_SHORT ).show ( );
-
                     mySql.deleteFromCart ( customerId,productId);
                     adepter.notifyItemRemoved ( position );
                     adepter.notifyDataSetChanged ();
@@ -117,8 +123,6 @@ public class Ordering_CartActivity extends AppCompatActivity implements OnItemCl
                     break;
 
             }
-
-
         }
 
         @Override
@@ -133,8 +137,6 @@ public class Ordering_CartActivity extends AppCompatActivity implements OnItemCl
 //                    .addActionIcon(R.drawable.my_icon)
                     .create ( )
                     .decorate ( );
-
-
             super.onChildDraw ( c, recyclerView, viewHolder, dX, dY, actionState, isCurrentlyActive );
 
         }

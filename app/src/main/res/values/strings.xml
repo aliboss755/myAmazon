@@ -37,4 +37,7 @@
     <string name="confirm_order" />
     <string name="price">price</string>
     <string name="order_to">Order To</string>
+    <string name="total_summation">total summation</string>
+    <string name="products_quantity">products quantity</string>
+    <string name="summary">Summary</string>
 </resources>
